@@ -7,19 +7,26 @@ class MyBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: GNav(tabs: [
+      child: GNav(
+        color: Colors.grey[400],
+        activeColor: Colors.green,
+        tabs: [
         GButton(
           icon: Icons.home,
           text: "Home",
         ),
         GButton(
-          icon: Icons.search,
-          text: "Search",
+          icon: Icons.favorite,
+          text: "Favorites",
         ),
         GButton(
-          icon: Icons.shopping_cart,
-          text: "Cart",
+          icon: Icons.person,
+          text: "Profile",
         ),
+        GButton(
+          icon: Icons.history,
+          text: "Order History",
+        )
       ]),
     );
   }
