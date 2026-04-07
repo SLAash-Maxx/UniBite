@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "817093154101",
+    "project_id": "unibite-fb2e4",
+    "storage_bucket": "unibite-fb2e4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817093154101:android:78bcabb81fdcc546cb287c",
+        "android_client_info": {
+          "package_name": "com.example.unibite"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAp-9nyUc4yw9gZIiRIgiwRFEubbpXuHS8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
