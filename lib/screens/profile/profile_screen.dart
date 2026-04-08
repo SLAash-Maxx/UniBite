@@ -280,19 +280,3 @@ class _MenuSection extends StatelessWidget {
   );
 }
 
-class _MenuItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  final Color? iconColor, labelColor;
-  final Widget? trailing;
-  const _MenuItem({required this.icon, required this.label, required this.onTap, this.iconColor, this.labelColor, this.trailing});
-  @override
-  Widget build(BuildContext context) => ListTile(
-    leading: Icon(icon, color: iconColor ?? AppColors.textSecondary, size: AppSizes.iconMd),
-    title: Text(label, style: AppTextStyles.labelLg.copyWith(color: labelColor ?? AppColors.textPrimary)),
-    trailing: trailing ?? (iconColor == null ? const Icon(Icons.chevron_right_rounded, color: AppColors.textHint) : null),
-    onTap: onTap,
-    contentPadding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
-  );
-}
