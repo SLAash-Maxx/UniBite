@@ -48,15 +48,7 @@ class UserModel extends Equatable {
     String? phone,
     DateTime? createdAt,
   }) =>
-      UserModel(
-        id: id ?? this.id,
-        fullName: fullName ?? this.fullName,
-        email: email ?? this.email,
-        studentId: studentId ?? this.studentId,
-        avatarUrl: avatarUrl ?? this.avatarUrl,
-        phone: phone ?? this.phone,
-        createdAt: createdAt ?? this.createdAt,
-      );
+      
 
   String get firstName => fullName.split(' ').first;
 
