@@ -15,7 +15,22 @@ import 'widgets/food_grid_card.dart';
 import 'widgets/sort_bottom_sheet.dart';
 import 'widgets/search_not_found.dart';
 
+class ShopScreen extends StatefulWidget {
+  const ShopScreen({super.key});
+  @override
+  State<ShopScreen> createState() => _ShopScreenState();
+}
 
+class _ShopScreenState extends State<ShopScreen> {
+  final _searchCtrl = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<FoodProvider>().loadShop();
+    });
+  }
 
   @override
   void dispose() { _searchCtrl.dispose(); super.dispose(); }
