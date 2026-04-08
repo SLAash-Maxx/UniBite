@@ -57,7 +57,28 @@ class WalletTransaction extends Equatable {
   List<Object?> get props => [id, type, amount, createdAt];
 }
 
+class WalletModel extends Equatable {
+  final String userId;
+  final double balance;
+  final List<WalletTransaction> transactions;
 
+  const WalletModel({
+    required this.userId,
+    required this.balance,
+    this.transactions = const [],
+  });
+
+  factory WalletModel.empty(String userId) =>
+      WalletModel(userId: userId, balance: 0.0);
+
+  factory WalletModel.fromJson(Map<String, dynamic> json) => WalletModel(
+        userId:       json['user_id'] as String,
+        balance:      (json['balance'] as num).toDouble(),
+        transactions: (json['transactions'] as List? ?? [])
+            .map((e) => WalletTransaction.fromJson(
+                {'id': e['id'] ?? '', ...e as Map<String, dynamic>}))
+            .toList(),
+      );
 
   @override
   List<Object?> get props => [userId, balance];
