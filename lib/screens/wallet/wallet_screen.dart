@@ -13,14 +13,7 @@ class WalletScreen extends StatefulWidget {
   State<WalletScreen> createState() => _WalletScreenState();
 }
 
-class _WalletScreenState extends State<WalletScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<WalletProvider>().loadWallet();
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
