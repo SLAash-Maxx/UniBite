@@ -1,11 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_sizes.dart';
-import '../../core/theme/text_styles.dart';
-import '../../core/utils/formatters.dart';
-import '../../models/wallet_model.dart';
-import '../../providers/wallet_provider.dart';
+
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
