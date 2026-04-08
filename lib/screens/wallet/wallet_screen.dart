@@ -133,6 +133,12 @@ class _TxTile extends StatelessWidget {
           Text(tx.note ?? '', style: AppTextStyles.caption, maxLines: 1, overflow: TextOverflow.ellipsis),
           Text(AppFormatters.formatDateTime(tx.createdAt), style: AppTextStyles.caption),
         ])),
-        
+        Text(
+          '${isCredit ? '+' : '-'} LKR ${tx.amount.toStringAsFixed(2)}',
+          style: AppTextStyles.labelLg.copyWith(
+              color: isCredit ? AppColors.success : AppColors.error),
+        ),
+      ]),
+    );     
   }
 }
