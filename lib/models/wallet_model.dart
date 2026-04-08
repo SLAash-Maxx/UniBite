@@ -1,18 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-enum TransactionType { topUp, orderPayment, orderRefund }
 
-extension TransactionTypeX on TransactionType {
-  String get label {
-    switch (this) {
-      case TransactionType.topUp:         return 'Top Up';
-      case TransactionType.orderPayment:  return 'Order Payment';
-      case TransactionType.orderRefund:   return 'Order Refund';
-    }
-  }
-  bool get isCredit =>
-      this == TransactionType.topUp || this == TransactionType.orderRefund;
-}
 
 class WalletTransaction extends Equatable {
   final String id;
