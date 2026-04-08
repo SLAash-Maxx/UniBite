@@ -20,22 +20,22 @@ class UserModel extends Equatable {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        id:        json['id'] as String,
-        fullName:  json['full_name'] as String,
-        email:     json['email'] as String,
+        id: json['id'] as String,
+        fullName: json['full_name'] as String,
+        email: json['email'] as String,
         studentId: json['student_id'] as String,
         avatarUrl: json['avatar_url'] as String?,
-        phone:     json['phone'] as String?,
+        phone: json['phone'] as String?,
         createdAt: DateTime.parse(json['created_at'] as String),
       );
 
   Map<String, dynamic> toJson() => {
-        'id':         id,
-        'full_name':  fullName,
-        'email':      email,
+        'id': id,
+        'full_name': fullName,
+        'email': email,
         'student_id': studentId,
         'avatar_url': avatarUrl,
-        'phone':      phone,
+        'phone': phone,
         'created_at': createdAt.toIso8601String(),
       };
 
@@ -49,12 +49,12 @@ class UserModel extends Equatable {
     DateTime? createdAt,
   }) =>
       UserModel(
-        id:        id        ?? this.id,
-        fullName:  fullName  ?? this.fullName,
-        email:     email     ?? this.email,
+        id: id ?? this.id,
+        fullName: fullName ?? this.fullName,
+        email: email ?? this.email,
         studentId: studentId ?? this.studentId,
         avatarUrl: avatarUrl ?? this.avatarUrl,
-        phone:     phone     ?? this.phone,
+        phone: phone ?? this.phone,
         createdAt: createdAt ?? this.createdAt,
       );
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/theme/text_styles.dart';
@@ -27,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-    _fadeAnim = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    _fadeAnim  = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
     _scaleAnim = Tween<double>(begin: 0.8, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
     );
@@ -72,20 +73,14 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                   child: Center(
                     child: Image.asset(
-                      'assets/images/logo.png',
-                      width: 200,
+                      AppAssets.logoWhite,
+                      width: 400,
                       
                       fit: BoxFit.contain,
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                Text(
-                  AppStrings.appTagline,
-                  style: AppTextStyles.bodyMd.copyWith(
-                    color: AppColors.textOnPrimary.withOpacity(0.8),
-                  ),
-                ),
+                const SizedBox(height: 8),
                 const SizedBox(height: 48),
                 SizedBox(
                   width: 24,

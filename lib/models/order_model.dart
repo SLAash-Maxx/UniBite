@@ -6,11 +6,16 @@ enum OrderStatus { placed, preparing, ready, completed, cancelled }
 extension OrderStatusX on OrderStatus {
   String get label {
     switch (this) {
-      case OrderStatus.placed:    return 'Order Placed';
-      case OrderStatus.preparing: return 'Preparing';
-      case OrderStatus.ready:     return 'Ready for Pickup';
-      case OrderStatus.completed: return 'Completed';
-      case OrderStatus.cancelled: return 'Cancelled';
+      case OrderStatus.placed:
+        return 'Order Placed';
+      case OrderStatus.preparing:
+        return 'Preparing';
+      case OrderStatus.ready:
+        return 'Ready for Pickup';
+      case OrderStatus.completed:
+        return 'Completed';
+      case OrderStatus.cancelled:
+        return 'Cancelled';
     }
   }
 
@@ -48,37 +53,36 @@ class OrderModel extends Equatable {
   int get totalItems => items.fold(0, (sum, i) => sum + i.quantity);
 
   factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
-        id:          json['id'] as String,
-        userId:      json['user_id'] as String,
-        canteenId:   json['canteen_id'] as String,
-        items:       (json['items'] as List)
+        id: json['id'] as String,
+        userId: json['user_id'] as String,
+        canteenId: json['canteen_id'] as String,
+        items: (json['items'] as List)
             .map((e) => CartItemModel.fromJson(e as Map<String, dynamic>))
             .toList(),
-        subtotal:    (json['subtotal'] as num).toDouble(),
+        subtotal: (json['subtotal'] as num).toDouble(),
         deliveryFee: (json['delivery_fee'] as num).toDouble(),
-        total:       (json['total'] as num).toDouble(),
-        status:      OrderStatus.values.firstWhere(
-            (s) => s.name == json['status'],
+        total: (json['total'] as num).toDouble(),
+        status: OrderStatus.values.firstWhere((s) => s.name == json['status'],
             orElse: () => OrderStatus.placed),
-        createdAt:   DateTime.parse(json['created_at'] as String),
-        updatedAt:   json['updated_at'] != null
+        createdAt: DateTime.parse(json['created_at'] as String),
+        updatedAt: json['updated_at'] != null
             ? DateTime.parse(json['updated_at'] as String)
             : null,
-        note:        json['note'] as String?,
+        note: json['note'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
-        'id':           id,
-        'user_id':      userId,
-        'canteen_id':   canteenId,
-        'items':        items.map((i) => i.toJson()).toList(),
-        'subtotal':     subtotal,
+        'id': id,
+        'user_id': userId,
+        'canteen_id': canteenId,
+        'items': items.map((i) => i.toJson()).toList(),
+        'subtotal': subtotal,
         'delivery_fee': deliveryFee,
-        'total':        total,
-        'status':       status.name,
-        'created_at':   createdAt.toIso8601String(),
-        'updated_at':   updatedAt?.toIso8601String(),
-        'note':         note,
+        'total': total,
+        'status': status.name,
+        'created_at': createdAt.toIso8601String(),
+        'updated_at': updatedAt?.toIso8601String(),
+        'note': note,
       };
 
   @override

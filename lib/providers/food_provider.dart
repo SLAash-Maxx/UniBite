@@ -10,16 +10,19 @@ class FoodProvider extends ChangeNotifier {
 
   List<FoodItemModel>  _allItems        = [];
   List<CategoryModel>  _categories      = CategoryModel.defaults;
+  List<CanteenModel>   _canteens        = [];
   CanteenModel?        _featuredCanteen;
+  CanteenModel?        _selectedCanteen; // FIX #8 - selected canteen
   String?              _selectedCategory;
   String               _searchQuery     = '';
   SortOption           _sortOption      = SortOption.popular;
   bool                 _isLoading       = false;
   bool                 _hasError        = false;
 
-  // Getters
   List<CategoryModel> get categories       => _categories;
+  List<CanteenModel>  get canteens         => _canteens;
   CanteenModel?       get featuredCanteen  => _featuredCanteen;
+  CanteenModel?       get selectedCanteen  => _selectedCanteen;
   String?             get selectedCategoryId => _selectedCategory;
   String              get searchQuery      => _searchQuery;
   SortOption          get sortOption       => _sortOption;
@@ -32,74 +35,89 @@ class FoodProvider extends ChangeNotifier {
   List<FoodItemModel> get popularItems =>
       _allItems.where((f) => f.isPopular).take(8).toList();
 
+  // FIX #7 - Filtering now works correctly
   List<FoodItemModel> get filteredItems {
     var items = [..._allItems];
 
-    // Category filter
+    // Filter by selected canteen
+    if (_selectedCanteen != null) {
+      items = items.where((f) => f.canteenId == _selectedCanteen!.id).toList();
+    }
+
+    // Filter by category
     if (_selectedCategory != null && _selectedCategory != '0') {
-      items = items
-          .where((f) => f.categoryId == _selectedCategory)
-          .toList();
+      items = items.where((f) => f.categoryId == _selectedCategory).toList();
     }
 
     // Search filter
     if (_searchQuery.isNotEmpty) {
       final q = _searchQuery.toLowerCase();
-      items = items
-          .where((f) =>
-              f.name.toLowerCase().contains(q) ||
-              f.description.toLowerCase().contains(q) ||
-              f.tags.any((t) => t.toLowerCase().contains(q)))
-          .toList();
+      items = items.where((f) =>
+        f.name.toLowerCase().contains(q) ||
+        f.description.toLowerCase().contains(q) ||
+        f.tags.any((t) => t.toLowerCase().contains(q))
+      ).toList();
     }
 
     // Sort
     switch (_sortOption) {
       case SortOption.popular:
-        items.sort((a, b) => b.reviewCount.compareTo(a.reviewCount));
-        break;
+        items.sort((a, b) => b.reviewCount.compareTo(a.reviewCount)); break;
       case SortOption.priceLow:
-        items.sort((a, b) => a.price.compareTo(b.price));
-        break;
+        items.sort((a, b) => a.price.compareTo(b.price)); break;
       case SortOption.priceHigh:
-        items.sort((a, b) => b.price.compareTo(a.price));
-        break;
+        items.sort((a, b) => b.price.compareTo(a.price)); break;
       case SortOption.newest:
         break;
     }
-
     return items;
   }
 
+  // Items grouped by canteen for shop screen
+  Map<CanteenModel, List<FoodItemModel>> get itemsByCanteen {
+    final map = <CanteenModel, List<FoodItemModel>>{};
+    for (final canteen in _canteens) {
+      final items = _allItems.where((f) => f.canteenId == canteen.id).toList();
+      if (items.isNotEmpty) map[canteen] = items;
+    }
+    return map;
+  }
+
   Future<void> loadHome() async {
-    _isLoading = true;
-    _hasError  = false;
-    notifyListeners();
+    _isLoading = true; _hasError = false; notifyListeners();
     try {
-      _featuredCanteen = await _service.getCanteen();
+      _canteens        = await _service.getAllCanteens();
+      _featuredCanteen = _canteens.isNotEmpty ? _canteens.first : null;
       _categories      = await _service.getCategories();
       _allItems        = await _service.getMenuItems();
-    } catch (_) {
-      _hasError = true;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+    } catch (_) { _hasError = true; }
+    finally { _isLoading = false; notifyListeners(); }
   }
 
   Future<void> loadShop() async {
-    _isLoading = true;
-    _hasError  = false;
-    notifyListeners();
+    _isLoading = true; _hasError = false; notifyListeners();
     try {
+      _canteens   = await _service.getAllCanteens();
       _categories = await _service.getCategories();
       _allItems   = await _service.getMenuItems();
-    } catch (_) {
-      _hasError = true;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+    } catch (_) { _hasError = true; }
+    finally { _isLoading = false; notifyListeners(); }
+  }
+
+  Future<void> loadCanteenItems(String canteenId) async {
+    _isLoading = true; notifyListeners();
+    try {
+      final items = await _service.getMenuItems(canteenId: canteenId);
+      _allItems = items;
+    } catch (_) {}
+    finally { _isLoading = false; notifyListeners(); }
+  }
+
+  // FIX #8 - Canteen selection
+  void selectCanteen(CanteenModel? canteen) {
+    _selectedCanteen = canteen;
+    _selectedCategory = null;
+    notifyListeners();
   }
 
   void selectCategory(String id) {

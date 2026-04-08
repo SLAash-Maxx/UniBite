@@ -11,18 +11,32 @@ import '../../../widgets/food_quantity_control.dart';
 
 class CartItemTile extends StatelessWidget {
   final CartItemModel item;
-
-  const CartItemTile({super.key, required this.item});
+  const CartItemTile({required this.item, super.key});
 
   @override
   Widget build(BuildContext context) {
     final cart = context.read<CartProvider>();
 
     return Dismissible(
-      key: Key(item.foodItem.id),
+      // FIX #18 — Use food id as key, unique and stable
+      key: Key('cart_${item.foodItem.id}'),
       direction: DismissDirection.endToStart,
-      background: _SwipeBackground(),
-      onDismissed: (_) => cart.removeAll(item.foodItem),
+      confirmDismiss: (_) async => true,
+      onDismissed: (_) {
+        // Safe: only remove if still in cart
+        if (cart.quantityOf(item.foodItem.id) > 0) {
+          cart.removeAll(item.foodItem);
+        }
+      },
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: AppSizes.lg),
+        decoration: BoxDecoration(
+          color: AppColors.errorSoft,
+          borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        ),
+        child: const Icon(Icons.delete_outline_rounded, color: AppColors.error, size: AppSizes.iconLg),
+      ),
       child: Container(
         padding: const EdgeInsets.all(AppSizes.md),
         decoration: BoxDecoration(
@@ -30,86 +44,34 @@ class CartItemTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppSizes.radiusLg),
           border: Border.all(color: AppColors.border, width: 0.5),
         ),
-        child: Row(
-          children: [
-            // Food image
-            ClipRRect(
-              borderRadius:
-                  BorderRadius.circular(AppSizes.radiusMd),
-              child: SizedBox(
-                width: 72,
-                height: 72,
-                child: item.foodItem.imageUrl != null
-                    ? CachedNetworkImage(
-                        imageUrl: item.foodItem.imageUrl!,
-                        fit: BoxFit.cover,
-                        placeholder: (_, __) => _Placeholder(),
-                        errorWidget: (_, __, ___) => _Placeholder(),
-                      )
-                    : _Placeholder(),
-              ),
+        child: Row(children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+            child: SizedBox(width: 72, height: 72,
+              child: item.foodItem.imageUrl != null
+                  ? CachedNetworkImage(imageUrl: item.foodItem.imageUrl!, fit: BoxFit.cover,
+                      placeholder: (_, __) => _Placeholder(), errorWidget: (_, __, ___) => _Placeholder())
+                  : _Placeholder()),
+          ),
+          const SizedBox(width: AppSizes.md),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(item.foodItem.name, style: AppTextStyles.labelLg, maxLines: 2, overflow: TextOverflow.ellipsis),
+            const SizedBox(height: 4),
+            Text(AppFormatters.formatPriceShort(item.foodItem.price), style: AppTextStyles.priceSm),
+          ])),
+          const SizedBox(width: AppSizes.sm),
+          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            FoodQuantityControl(
+              quantity: item.quantity, size: ControlSize.medium,
+              onIncrement: () => cart.add(item.foodItem),
+              onDecrement: () => cart.remove(item.foodItem),
             ),
-            const SizedBox(width: AppSizes.md),
-
-            // Name + price
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.foodItem.name,
-                    style: AppTextStyles.labelLg,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    AppFormatters.formatPriceShort(item.foodItem.price),
-                    style: AppTextStyles.priceSm,
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(width: AppSizes.sm),
-
-            // Qty control + subtotal
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                FoodQuantityControl(
-                  quantity: item.quantity,
-                  size: ControlSize.medium,
-                  onIncrement: () => cart.add(item.foodItem),
-                  onDecrement: () => cart.remove(item.foodItem),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  AppFormatters.formatPriceShort(item.subtotal),
-                  style: AppTextStyles.labelLg
-                      .copyWith(color: AppColors.primary),
-                ),
-              ],
-            ),
-          ],
-        ),
+            const SizedBox(height: 6),
+            Text(AppFormatters.formatPriceShort(item.subtotal),
+                style: AppTextStyles.labelLg.copyWith(color: AppColors.primary)),
+          ]),
+        ]),
       ),
-    );
-  }
-}
-
-class _SwipeBackground extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.centerRight,
-      padding: const EdgeInsets.only(right: AppSizes.lg),
-      decoration: BoxDecoration(
-        color: AppColors.errorSoft,
-        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-      ),
-      child: const Icon(Icons.delete_outline_rounded,
-          color: AppColors.error, size: AppSizes.iconLg),
     );
   }
 }
@@ -117,10 +79,7 @@ class _SwipeBackground extends StatelessWidget {
 class _Placeholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
-        color: AppColors.surfaceGrey,
-        child: const Center(
-          child: Icon(Icons.fastfood_outlined,
-              color: AppColors.textHint, size: 28),
-        ),
-      );
+    color: AppColors.surfaceGrey,
+    child: const Center(child: Icon(Icons.fastfood_outlined, color: AppColors.textHint, size: 28)),
+  );
 }

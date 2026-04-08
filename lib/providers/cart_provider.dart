@@ -4,34 +4,39 @@ import '../models/food_item_model.dart';
 
 class CartProvider extends ChangeNotifier {
   final List<CartItemModel> _items = [];
+  String? _canteenId;
+  String? _canteenName;
 
-  List<CartItemModel> get items => List.unmodifiable(_items);
+  List<CartItemModel> get items       => List.unmodifiable(_items);
+  String?             get canteenId   => _canteenId;
+  String?             get canteenName => _canteenName;
 
-  int get itemCount =>
-      _items.fold(0, (sum, i) => sum + i.quantity);
+  int    get itemCount   => _items.fold(0, (s, i) => s + i.quantity);
+  double get subtotal    => _items.fold(0.0, (s, i) => s + i.subtotal);
+  double get deliveryFee => 0.0;
+  double get total       => subtotal + deliveryFee;
+  bool   get isEmpty     => _items.isEmpty;
 
-  double get subtotal =>
-      _items.fold(0.0, (sum, i) => sum + i.subtotal);
-
-  double get deliveryFee => subtotal == 0 ? 0 : 0.0; // free pickup
-
-  double get total => subtotal + deliveryFee;
-
-  bool get isEmpty => _items.isEmpty;
-
-  int quantityOf(String foodItemId) {
-    final match = _items.cast<CartItemModel?>().firstWhere(
-      (i) => i!.foodItem.id == foodItemId,
-      orElse: () => null,
-    );
-    return match?.quantity ?? 0;
+  int quantityOf(String id) {
+    final m = _items.cast<CartItemModel?>().firstWhere(
+      (i) => i!.foodItem.id == id, orElse: () => null);
+    return m?.quantity ?? 0;
   }
 
-  void add(FoodItemModel food) {
+  // FIX #18 - Safe add: warn if different canteen
+  bool canAddFromCanteen(String canteenId) {
+    if (_items.isEmpty) return true;
+    return _canteenId == canteenId;
+  }
+
+  void add(FoodItemModel food, {String? canteenName}) {
+    if (_items.isEmpty) {
+      _canteenId   = food.canteenId;
+      _canteenName = canteenName ?? food.canteenId;
+    }
     final idx = _items.indexWhere((i) => i.foodItem.id == food.id);
     if (idx >= 0) {
-      _items[idx] = _items[idx].copyWith(
-          quantity: _items[idx].quantity + 1);
+      _items[idx] = _items[idx].copyWith(quantity: _items[idx].quantity + 1);
     } else {
       _items.add(CartItemModel(foodItem: food, quantity: 1));
     }
@@ -44,19 +49,23 @@ class CartProvider extends ChangeNotifier {
     if (_items[idx].quantity == 1) {
       _items.removeAt(idx);
     } else {
-      _items[idx] = _items[idx].copyWith(
-          quantity: _items[idx].quantity - 1);
+      _items[idx] = _items[idx].copyWith(quantity: _items[idx].quantity - 1);
     }
+    if (_items.isEmpty) { _canteenId = null; _canteenName = null; }
     notifyListeners();
   }
 
   void removeAll(FoodItemModel food) {
     _items.removeWhere((i) => i.foodItem.id == food.id);
+    if (_items.isEmpty) { _canteenId = null; _canteenName = null; }
     notifyListeners();
   }
 
+  // FIX #18 - clear() is now safe (was crashing due to Dismissible key conflict)
   void clear() {
     _items.clear();
+    _canteenId   = null;
+    _canteenName = null;
     notifyListeners();
   }
 }

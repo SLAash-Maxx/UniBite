@@ -8,12 +8,11 @@ import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/food_provider.dart';
 import 'providers/order_provider.dart';
+import 'providers/wallet_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const UniBiteApp());
 }
 
@@ -27,7 +26,11 @@ class UniBiteApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => FoodProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
-        ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => WalletProvider()),
+        ChangeNotifierProxyProvider<WalletProvider, OrderProvider>(
+          create: (_) => OrderProvider(),
+          update: (_, wallet, orders) => orders!..wallet = wallet,
+        ),
       ],
       child: MaterialApp.router(
         title: 'UniBite',

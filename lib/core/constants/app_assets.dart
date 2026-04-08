@@ -7,7 +7,8 @@ class AppAssets {
 
   // Logos & branding
   static const String logo         = '${_images}logo.png';
-  static const String logoWhite    = '${_images}logo_white.png';
+  static const String logoWhite    = '${_images}logo.png';
+  static const String nsbmLogo      = '${_images}nsbm_logo.png';
   static const String splashBg     = '${_images}splash_bg.png';
 
   // Onboarding / empty states

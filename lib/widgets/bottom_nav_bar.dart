@@ -9,7 +9,6 @@ import '../providers/cart_provider.dart';
 
 class AppScaffold extends StatelessWidget {
   final Widget child;
-
   const AppScaffold({super.key, required this.child});
 
   int _locationToIndex(String location) {
@@ -40,9 +39,7 @@ class AppScaffold extends StatelessWidget {
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: AppColors.surface,
-          border: Border(
-            top: BorderSide(color: AppColors.border, width: 0.5),
-          ),
+          border: Border(top: BorderSide(color: AppColors.border, width: 0.5)),
         ),
         child: BottomNavigationBar(
           currentIndex: _locationToIndex(location),
@@ -85,43 +82,26 @@ class AppScaffold extends StatelessWidget {
 class _CartIcon extends StatelessWidget {
   final int  count;
   final bool isActive;
-
   const _CartIcon({required this.count, required this.isActive});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Icon(
-          isActive
-              ? Icons.shopping_cart_rounded
-              : Icons.shopping_cart_outlined,
-        ),
-        if (count > 0)
-          Positioned(
-            top: -6,
-            right: -8,
-            child: Container(
-              padding: const EdgeInsets.all(3),
-              decoration: const BoxDecoration(
-                color: AppColors.badge,
-                shape: BoxShape.circle,
-              ),
-              constraints: const BoxConstraints(
-                  minWidth: 16, minHeight: 16),
-              child: Text(
-                count > 99 ? '99+' : '$count',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 9,
-                  fontWeight: FontWeight.w700,
-                ),
-                textAlign: TextAlign.center,
-              ),
+    return Stack(clipBehavior: Clip.none, children: [
+      Icon(isActive ? Icons.shopping_cart_rounded : Icons.shopping_cart_outlined),
+      if (count > 0)
+        Positioned(
+          top: -6, right: -8,
+          child: Container(
+            padding: const EdgeInsets.all(3),
+            decoration: const BoxDecoration(color: AppColors.badge, shape: BoxShape.circle),
+            constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+            child: Text(
+              count > 99 ? '99+' : '$count',
+              style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w700),
+              textAlign: TextAlign.center,
             ),
           ),
-      ],
-    );
+        ),
+    ]);
   }
 }
