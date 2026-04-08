@@ -1,14 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import '../../core/constants/app_assets.dart';
-import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_sizes.dart';
-import '../../core/constants/app_strings.dart';
-import '../../core/theme/text_styles.dart';
-import '../../core/router/route_names.dart';
-import '../../providers/auth_provider.dart';
-import '../../providers/wallet_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
