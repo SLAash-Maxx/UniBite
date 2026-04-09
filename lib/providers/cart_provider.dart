@@ -9,8 +9,7 @@ class CartProvider extends ChangeNotifier {
 
   List<CartItemModel> get items => List.unmodifiable(_items);
   String? get canteenId => _canteenId;
-  String? get canteenName => _canteenName;
-
+ 
   int get itemCount => _items.fold(0, (s, i) => s + i.quantity);
   double get subtotal => _items.fold(0.0, (s, i) => s + i.subtotal);
   double get deliveryFee => 0.0;
