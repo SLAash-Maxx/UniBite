@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
-import '../../core/theme/text_styles.dart';
+
 import '../../providers/order_provider.dart';
 import '../../models/order_model.dart';
 
