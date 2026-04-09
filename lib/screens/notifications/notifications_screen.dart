@@ -47,7 +47,26 @@ class NotificationsScreen extends StatelessWidget {
     );
   }
 
- 
+  List<_Notif> _buildNotifications(List<OrderModel> orders) {
+    final list = <_Notif>[];
+    for (final order in orders) {
+      final short = '#${order.id.substring(0, 6).toUpperCase()}';
+      switch (order.status) {
+        case OrderStatus.placed:
+          list.add(_Notif(
+              icon: '🛍️',
+              title: 'Order Placed',
+              body: 'Your order $short has been received.',
+              time: order.createdAt,
+              color: AppColors.info));
+          break;
+        case OrderStatus.preparing:
+          list.add(_Notif(
+              icon: '👨‍🍳',
+              title: 'Preparing Your Order',
+              body: 'Order $short is being prepared.',
+              time: order.updatedAt ?? order.createdAt,
+              color: AppColors.warning));
           break;
         case OrderStatus.ready:
           list.add(_Notif(
