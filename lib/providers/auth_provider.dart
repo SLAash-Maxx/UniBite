@@ -19,7 +19,13 @@ class AuthProvider extends ChangeNotifier {
     catch (_) { _currentUser = null; }
   }
 
- 
+  Future<bool> login({required String email, required String password}) async {
+    _isLoading = true; _errorMessage = null; notifyListeners();
+    try { _currentUser = await _service.login(email: email, password: password); notifyListeners(); return true; }
+    catch (e) { _errorMessage = e.toString().replaceAll('Exception: ', ''); return false; }
+    finally { _isLoading = false; notifyListeners(); }
+  }
+
   Future<bool> register({required String fullName, required String studentId, required String email, required String password}) async {
     _isLoading = true; _errorMessage = null; notifyListeners();
     try { _currentUser = await _service.register(fullName: fullName, studentId: studentId, email: email, password: password); notifyListeners(); return true; }
