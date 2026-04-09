@@ -7,7 +7,7 @@ class CartProvider extends ChangeNotifier {
   String? _canteenId;
   String? _canteenName;
 
- 
+  List<CartItemModel> get items => List.unmodifiable(_items);
   String? get canteenId => _canteenId;
   String? get canteenName => _canteenName;
 
