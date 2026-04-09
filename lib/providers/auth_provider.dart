@@ -39,8 +39,3 @@ class AuthProvider extends ChangeNotifier {
     catch (e) { _errorMessage = e.toString().replaceAll('Exception: ', ''); return false; }
     finally { _isLoading = false; notifyListeners(); }
   }
-
-  Future<void> logout() async {
-    await _service.logout(); _currentUser = null; notifyListeners();
-  }
-}
